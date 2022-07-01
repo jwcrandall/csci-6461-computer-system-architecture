@@ -1,3 +1,3 @@
-# csci-6907-quantum-computing
-csci-6907-quantum-computing
+# csci 6461 computer system architecture 
+csci 6461 computer system architecture
 
