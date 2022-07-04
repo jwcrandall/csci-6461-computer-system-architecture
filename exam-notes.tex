@@ -1,38 +1,27 @@
-\documentclass[fontsize=4pt]{scrartcl}
+\documentclass[fontsize=6pt]{scrartcl}
 \usepackage{lmodern}
-
 %\documentclass[10pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
-\usepackage[margin=0.25in]{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
-%\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
-\geometry{landscape}                		% Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
-\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
-								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage[margin=0.25in]{geometry}        % See geometry.pdf to learn the layout options. There are lots.
+%\geometry{letterpaper}                     % ... or a4paper or a5paper or ... 
+\geometry{landscape}                        % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}                       % Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
-\usepackage{esint}					%for cyclic integrals
+\usepackage{esint}                          %for cyclic integrals
 \usepackage{ amssymb } 
 \usepackage[usenames, dvipsnames]{color}
 \usepackage{multicol}
 \usepackage{color,soul}
-\usepackage{siunitx}				% Scientific Notation
-
-
+\usepackage{siunitx}                        % Scientific Notation
 \usepackage{graphicx}
 
 \def\rcurs{{\mbox{$\resizebox{.16in}{.08in}{\includegraphics{ScriptR}}$}}}
 \def\brcurs{{\mbox{$\resizebox{.16in}{.08in}{\includegraphics{BoldR}}$}}}
 \def\hrcurs{{\mbox{$\hat \brcurs$}}}
 
-\title{Electrodynamics}
-\author{Joseph Crandall}
-%\date{}							% Activate to display a given date or no date
-
 \begin{document}
-%\begin{multicols}{1}
-
-%\maketitle
 \colorbox{YellowGreen}{Joe Crandall's CSCI 6461 Computer System Architecture}
 \colorbox{Thistle}{Used Heavily}
 \colorbox{Cyan}{Topic}
@@ -40,15 +29,73 @@
 \colorbox{Aquamarine}{KNOWTHISMATH}
 \colorbox{RubineRed}{Definition/Constant/Units}
 \colorbox{Yellow}{break}
-\colorbox{Aquamarine}{Vector Derivatives}
-\textbf{Cartesian}
-$d\vec{l} = dx\hat{x} + dy\hat{y} + dz\hat{z}$
+\colorbox{Cyan}{Superscalar Architectures}
+\textbf{Q.} a. Supplemental figure 2 has an illustration of a Tomasulo example discussed in class. How does the Tomasulo algorithm accomplish register renaming? 
 \hl{I}
-$d \tau = dxdydz$
+\textbf{A.} Registers are sources for operands. Registers are limited in number. Instructions are issued to reservation stations along with operand values. Reservation stations are then the sources of operands and computation results, with respect to registers.
 \hl{I}
-$Gradient:  \nabla t =\frac{\partial t}{\partial x}\hat{x} + \frac{\partial t}{\partial y}\hat{y} + \frac{\partial t}{\partial z}\hat{z} $
+\textbf{Q.} b. Explain how the Tomasulo hardware makes maximum use of execution unit hardware, that is keeps the functional units busy.
 \hl{I}
+\textbf{A.} It issues instructions to reservation stations. Multiple instructions at any point in time may be waiting in reservation stations. Each reservation station may feed multiple functional units. The functional units operate in parallel. Functional units execute as soon as all operands are available.
+\hl{I}
+\textbf{Q.} c. How does a reorder buffer preserve exception behavior?
+\hl{I}
+\textbf{A.} The reorder buffer (ROB) stores exceptions from a reservation station execution and does not allow the exception until the offedning instruction is commited.
+\colorbox{Cyan}{Cache Coherency (Multiprocessors or Multicores)} 
+\textbf{Q.} a. What types of cache coherency is used in massively parallel architectures and why?
+\hl{I}
+\textbf{A.} Bus snooping is not used. What is used is message passing distributed memory that is shared and a directory per processor that manages its local memory.
+\hl{I}
+\textbf{Q.} b. In a snooping protocol, why are write misses always put on the bus?
+\hl{I}
+\textbf{A.} This allows other processors caches to see the miss and invalidate their copies.
+\colorbox{Cyan}{Vector Processors}
+\textbf{Q.} a. Explain why vector processors are much more efficient than compiler optimizations of loops and dynamic scheduling in scalar architectures.
+\hl{I}
+\textbf{A.} One instruction fetch causes multiple executions that would have been put in a loop in a scalar processor. Modern vector processors have optimized memory fetch/store hardware.
+\hl{I}
+\textbf{Q.} b. Briefly explain how vector units can accomplish forwarding?
+\hl{I}
+\textbf{A.} Using  a detection scheme similar to the forwarding unit in a scalar pipeline, outputs of functional units can be chained to inputs of other units based upon dependencies detected.
+\colorbox{Cyan}{Branch Prediction}
+\textbf{Q.} a. How does a branch target buffer eliminate invalid stage executions? 
+\hl{I}
+\textbf{A.} In Microprocessor without Interlocked Pipelined Stages (MIPS) the predictive location of the next instruction to be executed as a result of the branch is known at the end of the instruction fetch (IF) stage of the branch instruction an can be routed to the program counter (PC).
+\hl{I}
+\textbf{Q.} b. Why does a 4 state (2 bit) branch predictor do much better than a 2 state (1 bit) branch predictor?
+\hl{I}
+\textbf{A.} A 1 bit predictor will invert the bit if the prediction is wrong and backward branches for loops will be mispredicted twice. A 2 bit predictor allows for more information about tendencies. A prediction must miss twice before it is changed. It performs better for backward branches of loops.
+\hl{I}
+\textbf{Q.} c. What penalties do we pay for incorrect predictions with a reorder buffer?
+\hl{I}
+\textbf{A.} At the commit of a branch if the prediction was incorrect, we clear all subsequent values in the reorder buffer (ROB). All computations beyond the incorrect branch must be redone.
+\colorbox{Cyan}{Static Code Optimization}
+\textbf{Q.} Assume a standard Microprocessor without Interlocked Pipelined Stages (MIPS) architecture that we used in examples in class with branch determination and execution done in the second clock cycle for an instruction. Unroll the following loop once and shcedule (re-order) the instructions to maximize processor performance. Note that the loop is correct as is, and other possible optimizations may be possible. How many cycles are requiered to completely execute the unrolled loop once?
+\hl{I}
+loop: ld $r 6,0(r l)$
+\hl{I}
+ld $\mathbf{r} 2,0(\mathrm{r} 8)$
+\hl{I}
+add $r 6, r 6, r 2$
+\hl{I}
+st $r 6,0(r 1)$
+\hl{I}
+daddui r l.r1, #8
+\hl{I}
+bne $r$. $r$, loop
+\hl{I}
+\textbf{A.}
+\colorbox{Cyan}{Memory Hierarchy}
+\textbf{Q.} a. What basic concept or concepts throughout the memory hierarchy dictate where copies of memory should be kept?
+\hl{I}
+\textbf{A.} Locality, temporal and spatial
+\hl{I}
+\textbf{Q.} b. What happens to cache performance when the number of blocks in a direct mapped cache are reduced?
+\hl{I}
+\textbf{A.} The cache is the same size, the blocks are larger, and compulsory misses are higher. Capacity misses go up and conflict misses go up.
+\hl{I}
+\textbf{Q.} c. For b, how does this affect other optimizations in instruction scheduling and execution units?
+\hl{I}
+\textbf{A.} The miss rate impacts execution in the pipeline and prefetch works better.
 
-
-%\end{multicols}
 \end{document}  
