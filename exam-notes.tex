@@ -29,7 +29,46 @@
 \colorbox{Aquamarine}{KNOWTHISMATH}
 \colorbox{RubineRed}{Definition/Constant/Units}
 \colorbox{Yellow}{break}
-\colorbox{Cyan}{Superscalar Architectures}
+
+\colorbox{Cyan}{Lecture 1 Introduction}
+
+\colorbox{Cyan}{Lecture 2 Basic System Design}
+
+\colorbox{Cyan}{Lecture 3 Instruction Set Architecture}
+
+\colorbox{Cyan}{Lecture 4 Memory Systems}
+
+\colorbox{Cyan}{Lecture 6 I/O Systems}
+
+\colorbox{Cyan}{0608 Lecture MIPS}
+
+\colorbox{Cyan}{0608 Lecture Pipelines}
+
+\colorbox{Cyan}{Lecture 7 NA}
+
+\colorbox{Cyan}{0613 Branch Prediction}
+
+\colorbox{Cyan}{0613 Exploiting Instruction Level Parallelism with Software Approaches}
+
+\colorbox{Cyan}{0613 Instruction Level Parallelism}
+
+\colorbox{Cyan}{0613 Lecture 8 Instruction Level Parallelism}
+
+\colorbox{Cyan}{0613 Pipelines}
+
+\colorbox{Cyan}{0615 Lecture 5 Instruction Level Parallelism and Its Dynamic Exploitation}
+
+\colorbox{Cyan}{0615 Lecture 5 Overcoming Data Hazards with Dynamic Scheduling}
+
+\colorbox{Cyan}{0615 Tomasulo}
+
+\colorbox{Cyan}{0622 Lecture 9 Vector Operations}
+\colorbox{Cyan}{Lecture 10}
+\colorbox{Cyan}{Lecture 11}
+\colorbox{Cyan}{Lecture 12}
+
+\colorbox{Cyan}{0629 Sample Final}
+\colorbox{Orange}{Superscalar Architectures}
 \textbf{Q.} a. Supplemental figure 2 has an illustration of a Tomasulo example discussed in class. How does the Tomasulo algorithm accomplish register renaming? 
 \hl{I}
 \textbf{A.} Registers are sources for operands. Registers are limited in number. Instructions are issued to reservation stations along with operand values. Reservation stations are then the sources of operands and computation results, with respect to registers.
@@ -41,7 +80,7 @@
 \textbf{Q.} c. How does a reorder buffer preserve exception behavior?
 \hl{I}
 \textbf{A.} The reorder buffer (ROB) stores exceptions from a reservation station execution and does not allow the exception until the offedning instruction is commited.
-\colorbox{Cyan}{Cache Coherency (Multiprocessors or Multicores)} 
+\colorbox{Orange}{Cache Coherency (Multiprocessors or Multicores)} 
 \textbf{Q.} a. What types of cache coherency is used in massively parallel architectures and why?
 \hl{I}
 \textbf{A.} Bus snooping is not used. What is used is message passing distributed memory that is shared and a directory per processor that manages its local memory.
@@ -49,7 +88,7 @@
 \textbf{Q.} b. In a snooping protocol, why are write misses always put on the bus?
 \hl{I}
 \textbf{A.} This allows other processors caches to see the miss and invalidate their copies.
-\colorbox{Cyan}{Vector Processors}
+\colorbox{Orange}{Vector Processors}
 \textbf{Q.} a. Explain why vector processors are much more efficient than compiler optimizations of loops and dynamic scheduling in scalar architectures.
 \hl{I}
 \textbf{A.} One instruction fetch causes multiple executions that would have been put in a loop in a scalar processor. Modern vector processors have optimized memory fetch/store hardware.
@@ -57,7 +96,7 @@
 \textbf{Q.} b. Briefly explain how vector units can accomplish forwarding?
 \hl{I}
 \textbf{A.} Using  a detection scheme similar to the forwarding unit in a scalar pipeline, outputs of functional units can be chained to inputs of other units based upon dependencies detected.
-\colorbox{Cyan}{Branch Prediction}
+\colorbox{Orange}{Branch Prediction}
 \textbf{Q.} a. How does a branch target buffer eliminate invalid stage executions? 
 \hl{I}
 \textbf{A.} In Microprocessor without Interlocked Pipelined Stages (MIPS) the predictive location of the next instruction to be executed as a result of the branch is known at the end of the instruction fetch (IF) stage of the branch instruction an can be routed to the program counter (PC).
@@ -69,7 +108,7 @@
 \textbf{Q.} c. What penalties do we pay for incorrect predictions with a reorder buffer?
 \hl{I}
 \textbf{A.} At the commit of a branch if the prediction was incorrect, we clear all subsequent values in the reorder buffer (ROB). All computations beyond the incorrect branch must be redone.
-\colorbox{Cyan}{Static Code Optimization}
+\colorbox{Orange}{Static Code Optimization}
 \textbf{Q.} Assume a standard Microprocessor without Interlocked Pipelined Stages (MIPS) architecture that we used in examples in class with branch determination and execution done in the second clock cycle for an instruction. Unroll the following loop once and shcedule (re-order) the instructions to maximize processor performance. Note that the loop is correct as is, and other possible optimizations may be possible. How many cycles are requiered to completely execute the unrolled loop once?
 \hl{I}
 loop: ld $r 6,0(r l)$
@@ -85,7 +124,7 @@ daddui r l.r1, #8
 bne $r$. $r$, loop
 \hl{I}
 \textbf{A.}
-\colorbox{Cyan}{Memory Hierarchy}
+\colorbox{Orange}{Memory Hierarchy}
 \textbf{Q.} a. What basic concept or concepts throughout the memory hierarchy dictate where copies of memory should be kept?
 \hl{I}
 \textbf{A.} Locality, temporal and spatial
@@ -97,5 +136,6 @@ bne $r$. $r$, loop
 \textbf{Q.} c. For b, how does this affect other optimizations in instruction scheduling and execution units?
 \hl{I}
 \textbf{A.} The miss rate impacts execution in the pipeline and prefetch works better.
+
 
 \end{document}  
