@@ -1,4 +1,4 @@
-\documentclass[fontsize=6pt]{scrartcl}
+\documentclass[fontsize=5pt]{scrartcl}
 \usepackage{lmodern}
 %\documentclass[10pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
 \usepackage[margin=0.25in]{geometry}        % See geometry.pdf to learn the layout options. There are lots.
@@ -50,10 +50,48 @@ index registers: (X1$\ldots$X3): contains a base address that supports register 
 \hl{I}
 Instruction execution cyle: instruction fetch - obtain instruction from program storage, instruction decode - determine requiered actions and instruction size, operand fetch - locate and obtain operand data, execute - compute result value or status, result store - deposit results in storage for later use, next instruction - deterine sucessor instruction.
 \colorbox{Cyan}{0523 Lecture 2 Basic System Design}
-
-\colorbox{Cyan}{0525 Lecture 3 Instruction Set Architecture}
-
-\colorbox{Cyan}{0601 Lecture 4 Memory Systems}
+The simplest shifter is the shift register, which can shift by one position per clock cycle
+\hl{I}
+Performance, Resposne Time, Throughput, Execution Times
+\hl{I}
+Instruction Set Architecture, Processors, Memory, I/O Systems
+\hl{I}
+Finding the absolute value of an integer: abs - str	r0,0,$<$tempInt$>$; store r0 in $<$tempInt$>$, some location - ldr	r1,0,smask; mask for sign bit = 100 000 000 000 000 000 - and r1,r0; AND r1 and r0: if r0 bit is set it will be set in r1 - jz r1,0,pos; test if sign = 0, e.g., r0 bit 0 is 0 - src r0,1,1,1; shift r0 logical left 1 bit - src r0,1,0,1; shift r0 logical right – sets sign bit to 0
+\hl{I}
+Instruction format: 0...5 Operation Code (OP), 6 7 General Purpose Register (R), 8 9 Index Register (I), 10 Indirect Bit (I), 11 ... 15 Address - a binary number also referred to as immediate
+\hl{I}
+Effective Address (EA) = contents of Address field plus contents of the index register specified in the IX field – here it is 10 + 2 or 13
+\colorbox{Cyan}{0525 Lecture 3 Instruction Set Architecture} ISA is that portion of the machine visible to the assembly level programmer or to the compiler writer
+\hl{I}
+Challenges: Silicon Real Estate, Cost, Expandability, Legacy Support, Complexity
+\hl{I}
+The encoding of these instructions is one of the major tasks in instruction set design and requires very careful thought
+\hl{I}
+Instruction must specify: Which operation to perform, Where to find the operands (registers, memory, immediate, stack, other), Where to store the result (registers, memory, immediate, stack, other), Location of next instruction (either implicitly or explicitly)
+\hl{I}
+Types of Instructions: Transfer of control: jumps, calls | Arithmetic/Logical – add, subtract, multiply, divide, sqrt, log, sin, cos, ….; also, Boolean comparisons | Load/Store: load a value from memory or store a value to memory | Stack instructions: push/pop | System: traps, I/O, halt, no-operation | Floating Point Arithmetic | Decimal | String operations | Multimedia operations: Intel’s MMX and Sun’s VIS
+\hl{I}
+Multiple ways to add C = B + A: Stack Push A Push B Add Pop C | Accumulator Load A Add B Store C | Register (Register-memory) Load R1 A Add R1 B Store C R1 | Register (load-store) Load R1 A Load R2 B Add R3 R1 R2 Store C R3
+\hl{I}
+Stack Architecture: Need Top of Stack register, Stack Limit register, Pros Good code density (implicit operand addressing top of stack, Low hardware requirements, Easy to write a simple compiler for stack architectures, Cons, Stack becomes the bottleneck, Little ability for parallelism or pipelining, Data is not always at the top of stack when needed, so additional instructions are needed
+\hl{I}
+Accumulator Architectures: One or more accumulators (masquerade as GPRs), Pros Very low hardware requirements, Easy to design and understand, Cons, Accumulator becomes the bottleneck, Little ability for parallelism or pipelining, High memory traffic
+\hl{I}
+Memory-Memory Architectures: Operands fetched directly from memory into internal registers Pros, Requires fewer instructions (especially if 3 operands), Easy to write compilers for (especially if 3 operands), Cons Very high memory traffic (especially if 3 operands), Variable number of clocks per instruction (especially if 2 operands) and indexing and indirect access and , With two operands, more data movements are required
+\hl{I}
+Register-Memory Architectures: Operands fetched from register and memory Pros Some data can be accessed without loading first, Instruction format easy to encode, Good code density, Cons Operands are not equivalent (poor orthogonality), Variable number of clocks per instruction (w/ indexing and indirect access and), May limit number of registers 
+\hl{I}
+Load-Store/Register-Register Architectures: Operands fetched only from registers which are pre-loaded Pros Simple, fixed length instruction encoding, Instructions take similar number of cycles, Relatively easy to pipeline, Cons Higher instruction count , Not all instructions need three operands, Dependent on good compiler
+\hl{I}
+Addressing Types: Register Direct Addressing: The Register contains the operand, Direct Addressing to Main Memory: Instruction contains the Main Memory Address, Indirect Addressing To Main Memory: Instruction contains an address in main memory whose contents are the address of the operand
+\hl{I}
+Compilation Steps: Parsing intermediate representation, Jump Optimization, Loop Optimizations, Register Allocation, Code Generation assembly code, Common SubExpression, Procedure in-lining, Constant Propagation, Strength Reduction, Pipeline Scheduling 
+\hl{I}
+ISA Metrics: Orthogonality, completeness, regularity, streamlined design, ease of compilation
+\hl{I}
+ISA Design Space: number of explicit operands, operand storage, effective address, type and size of operands, operations.
+\colorbox{Cyan}{0601 Lecture 4 Memory Systems} Memory System Design: Key Ideas: The Principle of Locality: Programs access a relatively small portion of the address space at any instant of time. Instructions and data both exhibit spatial and temporal locality. Temporal locality: If a particular instruction or data item is used now, there is a good chance that it will be used again in the near future. Spatial locality: If a particular instruction or data item is used now, there is a good chance that the instructions or data items that are located in memory immediately following or preceding this item will soon be used. Therefore, it is a good idea to move such instruction and data items that are expected to be used soon from slow memory to fast memory (cache). BUT! This is prediction, and therefore will not always be correct – depends on the extent of locality.
+\hl{I}
 
 \colorbox{Cyan}{0606 Lecture 6 I/O Systems}
 
