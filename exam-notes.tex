@@ -1,4 +1,4 @@
-\documentclass[fontsize=5pt]{scrartcl}
+\documentclass[fontsize=4pt]{scrartcl}
 \usepackage{lmodern}
 %\documentclass[10pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
 \usepackage[margin=0.25in]{geometry}        % See geometry.pdf to learn the layout options. There are lots.
@@ -73,7 +73,7 @@ Types of Instructions: Transfer of control: jumps, calls | Arithmetic/Logical �
 \hl{I}
 Multiple ways to add C = B + A: Stack Push A Push B Add Pop C | Accumulator Load A Add B Store C | Register (Register-memory) Load R1 A Add R1 B Store C R1 | Register (load-store) Load R1 A Load R2 B Add R3 R1 R2 Store C R3
 \hl{I}
-Stack Architecture: Need Top of Stack register, Stack Limit register, Pros Good code density (implicit operand addressing top of stack, Low hardware requirements, Easy to write a simple compiler for stack architectures, Cons, Stack becomes the bottleneck, Little ability for parallelism or pipelining, Data is not always at the top of stack when needed, so additional instructions are needed
+Stack Architecture: Need Top of Stack register, Stack Limit register, Pros Good code density (implicit operand addressing top of stack, Low hardware requirements, Easy to write a simple compiler for stack architectures, Cons, Stack becomes the bottleneck, Little ability for parallelism or pipelining, Data is not always at the top of stack when needed, so additional instructions are needed
 \hl{I}
 Accumulator Architectures: One or more accumulators (masquerade as GPRs), Pros Very low hardware requirements, Easy to design and understand, Cons, Accumulator becomes the bottleneck, Little ability for parallelism or pipelining, High memory traffic
 \hl{I}
@@ -92,7 +92,27 @@ ISA Metrics: Orthogonality, completeness, regularity, streamlined design, ease o
 ISA Design Space: number of explicit operands, operand storage, effective address, type and size of operands, operations.
 \colorbox{Cyan}{0601 Lecture 4 Memory Systems} Memory System Design: Key Ideas: The Principle of Locality: Programs access a relatively small portion of the address space at any instant of time. Instructions and data both exhibit spatial and temporal locality. Temporal locality: If a particular instruction or data item is used now, there is a good chance that it will be used again in the near future. Spatial locality: If a particular instruction or data item is used now, there is a good chance that the instructions or data items that are located in memory immediately following or preceding this item will soon be used. Therefore, it is a good idea to move such instruction and data items that are expected to be used soon from slow memory to fast memory (cache). BUT! This is prediction, and therefore will not always be correct – depends on the extent of locality.
 \hl{I}
-
+Memory interleaving divides memory into banks as shown below. Addresses are distributed across the banks – 4-way interleaving is depicted. Interleaving allows simultaneous access to words in memory if the words are in separate banks. As we will see, this may conflict with caching
+\hl{I}
+You can think of computer memory as being one big array of data. The address serves as an array index. Each address refers to one word of data.
+\hl{I}
+Cache Performance: Memory access time = cache hit time or cache miss rate times miss penalty. To improve performance: reduce memory time  => we need to reduce hit time, miss rate and miss penalty. As L1 caches are in the critical path of instruction execution, hit time is the most important parameter. When one parameter is improved, others might suffer. Misses: Compulsory miss: always occurs first time. Capacity miss: reduces with increase in cache size. Conflict miss: reduces with level of associativity. Types: Instruction or Data Cache: 1-way or 2-way. Data Cache: write through & write-back
+\hl{I}
+Advantages of unified caches: Balance the load between instruction and data fetches depending on the dynamics of the program execution; Design and implementation are cheaper. Advantages of split caches (Harvard Architectures): Competition for the cache between instruction processing (which fetches from instruction cache) and execution functional units (which fetch from data cache) is eliminated. Instruction fetch can proceed in parallel with memory access from the execution unit.
+\hl{I}
+Cache Writing: A Write Buffer is needed between the Cache and Memory. Processor: writes data into the cache and the write buffer
+Memory controller: write contents of the buffer to memory. Write buffer is just a FIFO: Typical number of entries: 4. Q. Why a write buffer ? So CPU doesn’t stall. Why a buffer, why not just one register? Bursts of writes are common. Are Read After Write (RAW) hazards an issue for write buffer? Yes! Drain buffer before next read, or send read 1st after check write buffers. Write: Need to update upper cache(s) and main memory whenever a store instruction modifies L1 cache. Write Hit: the item to be modified is in L1. Write Through: as if no L1, write also to L2. Write Back: set a Dirty Bit, and update L2 before replacing the block.
+Although write through is an inefficient strategy, most L1s and some upper level caches follow this approach that read hit time is not affected due to complicated logic to update dirty bit. Write Miss: the item to be modified is not in L1. Write allocate: exploit locality, and bring the block to L1. Write no-allocate: do not fetch the missing block.
+\hl{I}
+Direct Mapped Cache: A memory block is mapped into a unique cache line, depending on the memory address of the respective block.
+A memory address is considered to be composed of three fields: the least significant bits (2 in our example) identify the byte within the block; [assume four bytes/block]. the rest of the address (22 bits in our example) identify the block in main memory; for the cache logic, this part is interpreted as two fields: 2a. the least significant bits (14 in our example) specify the cache line; 2b. the most significant bits (8 in our example) represent the tag, which is stored in the cache together with the line. Advantages: simple and cheap; the tag field is short; only those bits have to be stored which are not used to address the cache (compare with the following approaches); access is very fast. Disadvantage: a given block fits into a fixed cache location
+a given cache line will be replaced whenever there is a reference to another memory block which fits to the same line, regardless what the status of the other cache lines is. This can produce a low hit ratio, even if only a very small part of the cache is effectively used.
+\hl{I}
+Two Way Set Associative Cache: A block can be placed in a restricted set of places, or cache block frames. A set is a group of block frames in the cache. A block is first mapped onto the set and then it can be placed anywhere within the set.  The set in this case is chosen by:  (Block address)  MOD  (Number of sets in cache). Set associative mapping tries to eliminate the main shortcoming of direct mapping a certain flexibility is given concerning the line to be replaced when a new block is read into the cache. Cache hardware is more complex for set associative mapping than for direct mapping. In practice 2 and 4-way set associative mapping are used with very good results.
+\hl{I}
+Full Associative Cache: A block can be placed anywhere in cache. Lookup hardware for many tags can be large and slow
+\hl{I}
+Cache Optimizations: Fast Hit via Small and Simple Caches, Index tag memory and thereafter compare takes time | Fast Hit via Way Prediction, Make set-associative caches faster | Fast Hit via Trace Cache, Pack multiple non-contiguous basic blocks into one contiguous trace cache line | Increase Cache Bandwidth by Pipelining, Pipeline cache access to maintain bandwidth, but higher latency | Increasing Cache Bandwidth, Non-blocking cache or  lockup-free cache allow data cache to continue to supply cache hits during a miss requires out-of-order execution CPU | Increase Cache Bandwidth via Multiple Banks, Divide cache into independent banks that can support simultaneous accesses | Early Restart/Critical Word First to reduce miss penalty | Merging Write Buffer to Reduce Miss Penalty, Write buffer to allow processor to continue while waiting to write to memory | Reducing Misses By Compiler Optimizations, Instructions Reorder procedures in memory so as to reduce conflict misses, Profiling to look at conflicts
 \colorbox{Cyan}{0606 Lecture 6 I/O Systems}
 
 \colorbox{Cyan}{0608 Lecture MIPS}
