@@ -255,9 +255,34 @@ CVM \# Turn on all elements | $L V \vee A, r A \quad \#$ Load entire $A$ vector 
 Vectors w/ Sparse Matrices: Suppose: do	100 i = 1,n | (outside do) A(K(i)) = A(K(i)) + C(M(i)) | gather (LVI) operation takes an index vector and fetches data from each address in the index vector. This produces a “dense” vector in the vector registers. After these elements are operated on in dense form,  the sparse vector can be stored in expanded form by a scatter store (SVI), using the same index vector. Can't be figured out by a compiler since it can't know elements distinct, no dependencies
 Use CVI to create index 0, 1xm, 2xm, ..., 63xm
 \colorbox{Cyan}{0627 Lecture 10 High Performance Computing}
-
-\colorbox{Cyan}{0629 Lecture Cache Coherency Snooping}
-
+Parallel Computing: Simultaneous use of multiple processors - all components of a single architecture - to solve a task. Typically processors identical, single user (even if machine is multi-user).
+\hl{I}
+Distributed Computing: Use of a network of processors, each capable of being viewed as a computer in its own right, to solve a problem. Processors  may be heterogeneous, multi-user, and usually individual tasks are assigned  to individual processors.
+\hl{I}
+Concurrent Computing: Distributed + Parallel
+\hl{I}
+Michael Flynn’s Hardware Taxonomy: SI:	Single Instruction Stream (a) All processors execute the same instruction in the same cycle. Instruction may be conditional in Multiprocessors, control processor issues the instruction | MI: Multiple Instruction Stream (c) Different processors may be simultaneously executing different instructions | SD: Single Data Stream (d)
+All processors operate on the same data item (e.g., copies of it) at the same time | MD: Multiple Data Stream (b) Different processors may be simultaneously operating on different data items. Multiplying a coefficient vector by a data vector (e.g., in filtering) $y[I]:=c[I] \times x[I], 0 \leq i<n$
+\hl{I}
+Single Instruction Multiple Data (SIMD): Single (main) processor. Vector operations $\rightarrow$ One vector instruction $=$ many machine instructions on the data stream. Implemented as: Pipelined vector units or array of processors
+\hl{I}
+Multiple Instruction Single Data (MISD): Multiple Processors. Single Data stream is operated by multiple instruction streams. Pipeline Architectures and Systolic Arrays
+\hl{I}
+Multiple Instruction Multiple Data (MIMD): Multiple Processors,Multiple instruction streams operate on multiple data streams. Multi processors and Multi computers falls into this category.
+\hl{I}
+Processor Coupling: Tightly Coupled System: Tasks and/or processors communicate in a highly synchronized fashion | Communicates through a common shared memory Shared memory system | Loosely Coupled System: Tasks or processors do not communicate in a synchronized fashion. Communicates by message passing packets. Overhead for data exchange is high. Distributed memory system
+\hl{I}
+Granularity of Parallelism: Coarse-grain A task is broken into a handful of pieces, each of which is executed by a powerful processor. Processors may be heterogeneous. Computation/communication ratio is very high Example: BBN Butterfly | Medium-grain Tens to few thousands of processors typically running the same code. Computation/communication ratio is often hundreds or more. Intel Paragon XP, Touchstone Series | Fine-grain Thousands to perhaps millions of small pieces, executed by very small, simple processors or through pipelines. Processors typically have instructions broadcasted to them. Compute/communicate ratio often near unity. Example: Thinking Machines CM-1, CM-2, CM-200
+\hl{I}
+Memory Architextures: Shared (Global) Memory A Global Memory Space accessible by all processors. Processors may also have some local memory | Distributed (Local, Message-Passing) Memory. All memory units are associated with processors. To retrieve information from another processor's memory a message must be sent there. | Uniform Memory : All processors take the same time to reach all memory locations | Non-uniform (NUMA) Memory: Processors have varying access patterns to shared memory
+\hl{I}
+Operating System Master-Slave Multiprocessors: OS mostly runs on a single fixed CPU. User-level applications run on the other CPUs. All system calls are passed to the Master CPU for processing. Very little synchronization required. Single to implement. Single centralized scheduler to keep all processors busy. Memory can be allocated as needed to all CPUs. Issues: Master CPU becomes the bottleneck.
+\hl{I} 
+Interconnection Topologies: Shared Bus:All processors (and memory) are connected to a  common bus or busses. Memory access is fairly uniform, but not very scalable. A collection of signal lines that carry module-to-module communication. Data highways connecting several digital system elements. Can handle only one data transmission at a time. Can be easily expanded by connecting additional processors to the shared bus, along with the necessary bus arbitration circuitry.
+\hl{I}
+Multiport Memory: Has multiple sets of address, data, and control pins to allow simultaneous data transfers to occur. CPU and DMA controller can transfer data concurrently. A system with more than one CPU could handle simultaneous requests from two different processors. Does not scale well because of explosion of number of busses. Memory Module Control Logic. Each memory module has control logic. Resolve memory module conflicts via fixed priority among CPUs. Requests to read from and write to the same memory location simultaneously. Advantages Multiple paths -> high transfer rate. Disadvantages Multiple copies of Memory control logic Large number of connections
+\colorbox{Cyan}{0629 Lecture Cache Coherency Snooping} Caches serve to: Increase bandwidth versus bus/memory. Reduce latency of access. Valuable for both private data and shared data. What about cache consistency?
+\hl{I}
 \colorbox{Cyan}{0629 Lecture Snooping Protocol Directory Protocol Synchronization Consistency}
 
 \colorbox{Cyan}{0629 Sample Final}
